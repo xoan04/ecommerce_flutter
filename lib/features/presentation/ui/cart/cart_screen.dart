@@ -7,7 +7,9 @@ import '../../themes/app_styles.dart';
 import '../../themes/app_spacing.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({super.key});
+  final bool showBackButton;
+
+  const CartScreen({super.key, this.showBackButton = true});
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +19,14 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('My Cart'),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+        leading: showBackButton
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            : null,
         actions: [
           IconButton(
             icon: const Icon(Icons.delete),

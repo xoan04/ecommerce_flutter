@@ -1,19 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/config/core/assets.dart';
+import 'package:flutter_application_1/config/router/route_constants.dart';
 import 'package:flutter_application_1/features/presentation/themes/app_colors.dart';
+import 'package:flutter_application_1/features/presentation/themes/app_icons.dart';
+import 'package:flutter_application_1/features/presentation/themes/app_spacing.dart';
+import 'package:flutter_application_1/features/presentation/themes/app_styles.dart';
 import 'package:flutter_application_1/features/presentation/ui/profile/profile_controller.dart';
+import 'package:flutter_application_1/features/presentation/ui/widgets/buttom_Navigation_Bar.dart';
 import 'package:flutter_application_1/features/presentation/ui/widgets/logout_dialog.dart';
 import 'package:flutter_application_1/features/services/user_storage.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:io'; // Para trabajar con la clase File
-import 'package:flutter_application_1/config/router/route_constants.dart';
-import '../../themes/app_styles.dart';
-import '../../themes/app_spacing.dart';
-import '../../themes/app_icons.dart';
+import 'dart:io';
 
-class ProfileScreen extends StatelessWidget {
-  ProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  int _currentIndex = 3;
+
+  void _onItemTapped(int index) {
+    if (index == 2) {
+      Get.snackbar(
+        'Vista en construcción',
+        'Esta vista aun no está disponible.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } else if (index == 3) {
+      // Ya estamos en la pantalla de perfil, no hacer nada.
+    } else {
+      Get.offAllNamed(RouteConstants.home, arguments: index);
+    }
+  }
 
   final UserStorage userStorage = UserStorage();
 
@@ -26,7 +48,6 @@ class ProfileScreen extends StatelessWidget {
     final ProfileController controller = Get.put(ProfileController());
 
     if (FirebaseAuth.instance.currentUser == null) {
-      // Si el usuario no está logueado, redirigir al login
       Future.microtask(
         () => Get.offNamed(
           RouteConstants.login,
@@ -41,12 +62,7 @@ class ProfileScreen extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return LogoutDialog();
-          },
-        );
+        Get.offAllNamed(RouteConstants.home);
         return false;
       },
       child: Scaffold(
@@ -56,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.of(context).pop();
+              Get.offAllNamed(RouteConstants.home);
             },
           ),
           actions: [
@@ -154,6 +170,10 @@ class ProfileScreen extends StatelessWidget {
               );
             });
           },
+        ),
+        bottomNavigationBar: BottomNavBar(
+          currentIndex: _currentIndex,
+          onTap: _onItemTapped,
         ),
       ),
     );

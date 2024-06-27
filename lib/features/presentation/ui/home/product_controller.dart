@@ -4,7 +4,6 @@ import 'package:flutter_application_1/features/presentation/ui/cart/cart_control
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class ProductController extends GetxController {
   var isLoading = true.obs;
   var products = <ProductModel>[].obs;
@@ -14,9 +13,8 @@ class ProductController extends GetxController {
 
   // Mapa de imágenes de fondo por categoría
   final Map<String, String> categoryBackgrounds = {
-    //'New Arrivals': ',
-    'Clothes':Assets.backgroundClothesCategory,
-    'Bags':Assets.backgroundBagsCategory,
+    'Clothes': Assets.backgroundClothesCategory,
+    'Bags': Assets.backgroundBagsCategory,
     'Shoes': Assets.backgroundShoesCategory,
   };
 
@@ -36,7 +34,7 @@ class ProductController extends GetxController {
     fetchProducts();
   }
 
-  void fetchProducts() async {
+  Future<void> fetchProducts() async {
     try {
       isLoading(true);
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('productos').get();
@@ -49,7 +47,6 @@ class ProductController extends GetxController {
         categoryCount[product.category] = (categoryCount[product.category] ?? 0) + 1;
       }
       categories.assignAll(categoryCount);
-
     } finally {
       isLoading(false);
     }
